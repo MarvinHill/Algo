@@ -6,22 +6,17 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Stack;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Main {
 
-  String hoch = "/";
-  String runter = "\\";
-  String bleib = "-";
-  String point = "#";
-
   public static void main(String[] args) {
-    // Tes
-    // visualizePath(test);
-    visualizeAllPoints(possiblePoints(5000));
-
-    //Test binominal Antwort = 56
-    //System.out.println(binom(8,3));
+    double startTime = System.nanoTime();
+    possiblePoints(100);
+    double endTime = System.nanoTime();
+    double duration = (endTime - startTime);
+    System.out.println(duration / 1000000.0d / 1000.0d + " Sekunden");
   }
 
   public static Point[] possiblePoints(int n) {
@@ -37,9 +32,8 @@ public class Main {
     out = points.toArray(new Point[0]);
 
     for (Point point : out) {
-      System.out.println(point);
-      gesamtAnzahlPfade = gesamtAnzahlPfade.add(printPathAmount(point));
-
+      //System.out.println(point);
+      gesamtAnzahlPfade = gesamtAnzahlPfade.add(getPathAmount(point));
     }
 
     // Copied Code
@@ -54,121 +48,59 @@ public class Main {
     return out;
   }
 
-  public static void visualizeAllPoints(Point[] points) {
-    int xMax = 0;
-    int yMax = 0;
-    int[][] koordsys;
 
-    for (Point point : points) {
-      if (point.i > yMax) yMax = point.i;
-      if (point.j > xMax) xMax = point.j;
-    }
-    koordsys = new int[xMax + 1][yMax + 1];
-    //System.out.println(xMax + " " + yMax);
+  public static BigInteger getPathAmount(Point p) {
 
-    for (Point point : points) {
-      koordsys[point.j][point.i] = 1;
-    }
+    BigDecimal temp;
+    BigDecimal temp2;
+    BigDecimal erg;
+    BigInteger out;
 
-    visualize(koordsys, "All Points:");
-  }
+    BigDecimal pi =  new BigDecimal(p.i);
+    BigDecimal pj = new BigDecimal(p.j);
 
-  public static void visualizePointPath(Point[] points) {
-    int xMax = 0;
-    int yMax = 0;
-    int[][] koordsys;
+    temp = pi.add(BigDecimal.ONE).subtract(pj).divide(pi.add(BigDecimal.ONE),4096,RoundingMode.HALF_UP);
+    temp2 = new BigDecimal(binom1(p.i + p.j, p.i));
+    //temp = BigDecimal.valueOf(p.i + 1 - p.j).divide(BigDecimal.valueOf(p.i + 1),4096,RoundingMode.HALF_UP);
 
-    for (Point point : points) {
-      if (point.i > yMax) yMax = point.i;
-      if (point.j > xMax) xMax = point.j;
-    }
-    koordsys = new int[xMax + 1][yMax + 1];
-    System.out.println(xMax + " " + yMax);
 
-    for (Point point : points) {
-      koordsys[point.j][point.i] = 1;
-    }
+    erg = temp.multiply(temp2).setScale(4096,RoundingMode.HALF_EVEN);
+    out = erg.toBigInteger();
 
-    visualize(koordsys, "Path");
-  }
-
-  public static BigInteger printPathAmount(Point p) {
-    BigDecimal temp = BigDecimal.valueOf(p.i + 1 - p.j).divide(BigDecimal.valueOf(p.i + 1),4096,RoundingMode.HALF_UP);
-    BigDecimal temp2 = new BigDecimal(binom(p.i + p.j, p.i));
-    BigDecimal erg = temp.multiply(temp2).setScale(4096,RoundingMode.HALF_EVEN);
-    BigInteger out = erg.toBigInteger();
-
-    //double temp = ((double) p.i + 1 - (double) p.j) / ((double) p.i + 1);
-    //double temp2 = binom(p.i + p.j, p.i);
-    //long erg = (long) (temp * temp2);
-    System.out.println("Pfadanzahl:" + erg + " Gesamtanzahl: " + temp);
+    //System.out.println("Pfadanzahl:" + erg.setScale(1, RoundingMode.HALF_EVEN) + " Prozent: " + temp.setScale(5, RoundingMode.HALF_EVEN));
 
     return out;
   }
 
-  public static BigInteger binom(int n, int k) {
-    BigInteger[][] array = new BigInteger[n + 1][k + 1];
-    for (int i = 0; i <= n; i++) {
-      for (int j = 0; j <= Math.min(i, k); j++) {
-        if (j == 0 || j == i)
-          array[i][j] = BigInteger.ONE;
-        else
-          array[i][j] = array[i - 1][j - 1].add(array[i - 1][j]);
-      }
+  //
+  public static BigInteger binom1(int n, int k)
+      throws IllegalArgumentException {
+
+    if (n < 0 || k < 0) {
+      throw new IllegalArgumentException(
+          "Cannot calculate combination"
+              + " for negative numbers.");
     }
-    return array[n][k];
+    if (n == 0) {
+      return BigInteger.ZERO;
+    }
+
+    BigInteger r = BigInteger.ONE;
+    int nMinusK = n - k;
+    for (int i = 1; i <= k; i++) {
+      r = r.multiply(BigInteger.valueOf(nMinusK + i)).divide(
+          BigInteger.valueOf(i));
+    }
+    return r;
   }
 
-  public static void visualize(int[][] path, String titel) {
-
-    System.out.println("-------------\n " + titel);
-    for (int i = path.length - 1; i >= 0; i--) {
-      for (int j = 0; j < path[0].length; j++) {
-        if (path[i][j] == 1) {
-          System.out.print(" * ");
-        } else if (i == j) {
-          System.out.print(" # ");
-        } else if (path[i][j] == 0) {
-          System.out.print(" - ");
-        }
-      }
-      System.out.println("");
+  public static BigInteger binom2(int N, int K) {
+    BigInteger ret = BigInteger.ONE;
+    for (int k = 0; k < K; k++) {
+      ret = ret.multiply(BigInteger.valueOf(N-k))
+          .divide(BigInteger.valueOf(k+1));
     }
-    System.out.println("-------------");
-  }
-
-  public static void computePaths(Point point) {
-    int x = 0;
-    int y = 0;
-    int i = point.i;
-    int j = point.j;
-
-    Stack<Point> points = new Stack<>();
-    ArrayList<Point> pfad = new ArrayList<>();
-
-    do {
-      if (x == y || y == j) {
-        x++;
-        pfad.add(new Point(x, y));
-      } else if (x == i) {
-        y++;
-        pfad.add(new Point(x, y));
-      } else {
-        points.add(new Point(x, y));
-        x++;
-        pfad.add(new Point(x, y));
-      }
-
-      if (x == i && y == j) {
-        visualizePointPath(pfad.toArray(new Point[0]));
-        if (!points.isEmpty()) {
-          Point tempPoint = points.pop();
-          x = tempPoint.i;
-          y = tempPoint.j;
-          // Rest fehltb
-        }
-      }
-    } while (!points.isEmpty());
+    return ret;
   }
 
   public static class Point {
