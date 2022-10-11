@@ -36,13 +36,11 @@ public class Main {
       gesamtAnzahlPfade = gesamtAnzahlPfade.add(getPathAmount(point));
     }
 
-    // Copied Code
     DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.GERMANY);
     DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
 
     symbols.setGroupingSeparator('.');
     formatter.setDecimalFormatSymbols(symbols);
-    // End Copied Code
 
     System.out.println("Gesamtpfadanzahl: "+formatter.format(gesamtAnzahlPfade));
     return out;
@@ -61,18 +59,14 @@ public class Main {
 
     temp = pi.add(BigDecimal.ONE).subtract(pj).divide(pi.add(BigDecimal.ONE),4096,RoundingMode.HALF_UP);
     temp2 = new BigDecimal(binom1(p.i + p.j, p.i));
-    //temp = BigDecimal.valueOf(p.i + 1 - p.j).divide(BigDecimal.valueOf(p.i + 1),4096,RoundingMode.HALF_UP);
 
 
     erg = temp.multiply(temp2).setScale(4096,RoundingMode.HALF_EVEN);
     out = erg.toBigInteger();
 
-    //System.out.println("Pfadanzahl:" + erg.setScale(1, RoundingMode.HALF_EVEN) + " Prozent: " + temp.setScale(5, RoundingMode.HALF_EVEN));
-
     return out;
   }
 
-  //
   public static BigInteger binom1(int n, int k)
       throws IllegalArgumentException {
 
