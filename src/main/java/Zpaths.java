@@ -53,7 +53,7 @@ public class Zpaths {
     formatter.setDecimalFormatSymbols(symbols);
 
     // Das Ergebnis wird ausgegeben
-    System.out.println("Gesamtpfadanzahl: " + formatter.format(gesamtAnzahlPfade));
+    System.out.println("Gesamtpfadanzahl n=" + n +" : " + formatter.format(gesamtAnzahlPfade));
   }
 
   /**
