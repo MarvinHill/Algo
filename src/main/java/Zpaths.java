@@ -15,7 +15,7 @@ public class Zpaths {
 
   public static void main(String[] args) {
     double startTime = System.nanoTime();
-    findPathAmount(100);
+    findPathAmount(10000000);
     double endTime = System.nanoTime();
     double duration = (endTime - startTime);
     System.out.println(duration / 1000000.0d / 1000.0d + " Sekunden");
