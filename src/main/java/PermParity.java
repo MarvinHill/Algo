@@ -16,7 +16,7 @@ public class PermParity {
   static final HashMap<Integer, LinkedList<Integer[]>> speicher = new HashMap<>();
   static final Path path = Paths.get("src/main/java/data.txt");
   static boolean save = false;
-  static int count = 0;
+  static long count = 0;
 
   public static void main(String[] args) throws IOException {
     if (save) Files.deleteIfExists(path);
