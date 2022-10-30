@@ -15,23 +15,25 @@ public class PermParity {
   static final Scanner scanner = new Scanner(System.in);
   static final HashMap<Integer, LinkedList<Integer[]>> speicher = new HashMap<>();
   static final Path path = Paths.get("src/main/java/data.txt");
+  static boolean save = false;
+  static int count = 0;
 
   public static void main(String[] args) throws IOException {
-    Files.deleteIfExists(path);
-    Files.createFile(path);
+    if (save) Files.deleteIfExists(path);
+    if (save) Files.createFile(path);
     // start application main loop
     while (true) {
       // get user input
       System.out.print("Please enter n: ");
       int n = scanner.nextInt();
       System.out.println("new n: " + n);
-      Files.writeString(path,"n = " + n + "\n", StandardOpenOption.APPEND);
+      if (save) Files.writeString(path, "n = " + n + "\n", StandardOpenOption.APPEND);
       computeAllParity(n);
-        //measureTime(n);
+      //measureTime(n);
     }
   }
 
-  private static void measureTime(int n) {
+  private static void measureTime(int n) throws IOException {
     ArrayList<Long> times = new ArrayList<>();
     for (int i = 1; i <= n; i++) {
       long startTime = System.nanoTime();
@@ -48,23 +50,38 @@ public class PermParity {
     }
     double x = 100 / maxTime;
 
+    System.out.println("Performance:");
+    if (save) Files.writeString(path, "Performance:\n", StandardOpenOption.APPEND);
+    int count = 1;
     for (double time : times) {
       int amount = (int) (time * x);
-      if (amount == 0) System.out.print("*");
-      for (int i = 0; i < amount; i++) {
+      if (save) Files.writeString(path, "n = " + Integer.toString(count) + " |", StandardOpenOption.APPEND);
+      System.out.print("n = " + count++ + " |");
+      if (amount == 0) {
+        if (save) Files.writeString(path, "*", StandardOpenOption.APPEND);
         System.out.print("*");
       }
-      System.out.println(time + "ms");
+      for (int i = 0; i < amount; i++) {
+        if (save) Files.writeString(path, "*", StandardOpenOption.APPEND);
+        System.out.print("*");
+      }
+      if (save) Files.writeString(path, " " + time + " ms\n", StandardOpenOption.APPEND);
+      System.out.println(" " + time + " ms");
     }
+    System.out.println("All times: " + times);
+    if (save) Files.writeString(path, "All times: " + times + "\n", StandardOpenOption.APPEND);
   }
 
-  private static void computeAllParity(int n) {
+  private static void computeAllParity(int n) throws IOException {
+
+    count = 0;
 
     ArrayList<Integer> list = new ArrayList<Integer>();
 
     for (int i = 1; i <= n; i++) {
       list.add(i);
     }
+    long startTime = System.nanoTime();
     for (Integer i : list) {
       ArrayList<Integer> startList = new ArrayList<>();
       ArrayList<Integer> rest = (ArrayList<Integer>) list.clone();
@@ -73,16 +90,18 @@ public class PermParity {
 
       computeParity(startList, rest, n);
     }
+    long endTime = System.nanoTime();
+    long duration = (endTime - startTime);
+    System.out.println("Count of Solutions: " + count);
+    System.out.println("Time: " + duration + " ns");
   }
 
-  private static void computeParity(ArrayList<Integer> list, ArrayList<Integer> rest, int n) {
+  private static void computeParity(ArrayList<Integer> list, ArrayList<Integer> rest, int n)
+      throws IOException {
     if (rest.size() == 0 && list.size() <= n) {
-      try {
-        Files.writeString(path,list.toString() + "\n", StandardOpenOption.APPEND);
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+      if (save) Files.writeString(path, list.toString() + "\n", StandardOpenOption.APPEND);
       System.out.println(list);
+      count++;
       return;
     }
     int zahl = list.get(list.size() - 1);
