@@ -1,26 +1,33 @@
-import static java.lang.Thread.sleep;
-
-import java.lang.reflect.Array;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.OpenOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 public class PermParity {
   static final Scanner scanner = new Scanner(System.in);
   static final HashMap<Integer, LinkedList<Integer[]>> speicher = new HashMap<>();
+  static final Path path = Paths.get("src/main/java/data.txt");
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
+    Files.deleteIfExists(path);
+    Files.createFile(path);
     // start application main loop
     while (true) {
       // get user input
       System.out.print("Please enter n: ");
       int n = scanner.nextInt();
       System.out.println("new n: " + n);
-
-      measureTime(n);
+      Files.writeString(path,"n = " + n + "\n", StandardOpenOption.APPEND);
+      computeAllParity(n);
+        //measureTime(n);
     }
   }
 
@@ -70,6 +77,11 @@ public class PermParity {
 
   private static void computeParity(ArrayList<Integer> list, ArrayList<Integer> rest, int n) {
     if (rest.size() == 0 && list.size() <= n) {
+      try {
+        Files.writeString(path,list.toString() + "\n", StandardOpenOption.APPEND);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
       System.out.println(list);
       return;
     }
