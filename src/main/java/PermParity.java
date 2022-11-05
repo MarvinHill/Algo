@@ -10,7 +10,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
-
+/**
+ * @author Marvin Hill (211926)
+ * @author Janina Dörlinger (211923)
+ */
 public class PermParity {
   static final Scanner scanner = new Scanner(System.in); // für die Eingabe von n
   static long count = 0;
@@ -78,7 +81,7 @@ public class PermParity {
         newRest.remove(rest.indexOf(i));
         ArrayList<Integer> newList = (ArrayList<Integer>) list.clone();
         newList.add(i);
-        //Rekursiver Aufruf der Funktion
+        // Rekursiver Aufruf der Funktion
         computeParity(newList, newRest, n);
       }
     }
@@ -95,7 +98,7 @@ public class PermParity {
         newRest.remove(rest.indexOf(value));
         ArrayList<Integer> newList = (ArrayList<Integer>) list.clone();
         newList.add(value);
-        //Rekursiver Aufruf der Funktion
+        // Rekursiver Aufruf der Funktion
         computeParity(newList, newRest, n);
       }
     }
