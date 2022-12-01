@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Class DLXNode
@@ -13,8 +14,12 @@ import java.util.Arrays;
  *      http://arxiv.org/abs/cs/0011047 
  */
 class DLXNode {       // represents 1 element or header
-  public static long cnt = 0;
 
+  public String name;
+  public static int ct = 0;
+  public static  ArrayList<DLXNode> allNodes = new ArrayList<>();
+
+  public static long cnt = 0;
   // Header überdeckungstabelle
   public static DLXNode h = new DLXNode();
   public DLXNode C;           // reference to column-header
@@ -22,6 +27,9 @@ class DLXNode {       // represents 1 element or header
 
 
   DLXNode() {
+    this.name = Integer.toString(ct);
+    ct++;
+    allNodes.add(this);
     C = L = R = U = D = this;
   } // supports circular lists
 
@@ -34,6 +42,7 @@ class DLXNode {       // represents 1 element or header
    * @param k: number of level
    */
   public static void search(int k) { // finds & counts solutions
+    if(DLXPentominoNUZ.debug)System.out.print("searching...");
     if (h.R == h) {
       cnt++;
       return;
@@ -60,6 +69,7 @@ class DLXNode {       // represents 1 element or header
    * @param c: header element of column that has to be covered
    */
   public static void cover(DLXNode c) { // remove column c
+    if(DLXPentominoNUZ.debug)System.out.print("cov...");
     c.R.L = c.L;                         // remove header
     c.L.R = c.R;                         // .. from row list
     for (DLXNode i = c.D; i != c; i = i.D)      // forall rows with 1
@@ -77,6 +87,7 @@ class DLXNode {       // represents 1 element or header
    * @param c: header element of column that has to be uncovered
    */
   public static void uncover(DLXNode c) {//undo remove col c
+    if(DLXPentominoNUZ.debug)System.out.print("unc...");
     for (DLXNode i = c.U; i != c; i = i.U)      // forall rows with 1
       for (DLXNode j = i.L; i != j; j = j.L) {   // forall elem in row
         j.D.U = j;                       // un-remove row elem
@@ -84,5 +95,14 @@ class DLXNode {       // represents 1 element or header
       }
     c.R.L = c;                           // un-remove header
     c.L.R = c;                           // .. to row list
+  }
+
+  public static String getAllNodes(){
+    String str = "Nodes: {";
+    str += "Start: " + DLXNode.h.name + "\n";
+    for (DLXNode node : allNodes) {
+      str += "NODE:" + node.name + "{Down:" + node.D.name + ", Up: " + node.U.name + ", Right: " + node.R.name + ", Left: " + node.L.name + ", Header: " + node.C.name +"},\n" ;
+    }
+    return str + "}";
   }
 }
