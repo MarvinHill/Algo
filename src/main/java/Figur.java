@@ -2,6 +2,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * @author Marvin Hill (211926)
+ * @author Janina Dörlinger (211923)
+ */
+
 class Figur {
   public final static ArrayList<Figur> figures = new ArrayList<>();
   private final int[][] points;

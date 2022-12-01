@@ -13,6 +13,12 @@ import java.util.Objects;
  *      http://en.wikipedia.org/wiki/Dancing_Links
  *      http://arxiv.org/abs/cs/0011047 
  */
+
+/**
+ * Änderung an der Klasse von:
+ * @author Marvin Hill (211926)
+ * @author Janina Dörlinger (211923)
+ */
 class DLXNode {       // represents 1 element or header
 
   public String name;
