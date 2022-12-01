@@ -43,7 +43,6 @@ public class DLXPentominoNUZ {
         }
 
         generateMatrix(n);
-        System.out.println("done");
         DLXNode.search(0);
         System.out.println("\nErgebnis: " + DLXNode.cnt + " für n=" + n);
     }
